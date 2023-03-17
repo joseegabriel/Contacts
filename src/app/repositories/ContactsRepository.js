@@ -20,23 +20,21 @@ let contacts = [
 ];
 
 class ContactsRepository {
-  findAll() {
-    return new Promise((resolve) => {
-      resolve(contacts);
-    });
+  async findAll() {
+    const rows = await db.query('SELECT * FROM contacts');
+    return rows
   }
 
-  findByEmail(email) {
-    return new Promise((resolve) => resolve(
-      contacts.find((contact) => contact.email === email),
-    ));
+  async findById(id) {
+    const [ row ] = await db.query('SELECT * FROM contacts WHERE id = $1', [id]);
+    return row;
   }
 
-  findById(id) {
-    return new Promise((resolve) => resolve(
-      contacts.find((contact) => contact.id === id),
-    ));
+  async findByEmail(email) {
+    const [ row ] = await db.query('SELECT * FROM contacts WHERE email = $1', [email]);
+    return row;
   }
+
 
   delete(id) {
     return new Promise((resolve) => {
@@ -48,8 +46,7 @@ class ContactsRepository {
   async create({
     name, email, phone, category_id
   }) {
-    // SQL Injection
-    const { row } = await db.query(`
+    const [row] = await db.query(`
     INSERT INTO contacts(name, email, phone, category_id)
     VALUES($1, $2, $3, $4)
     RETURNING *
