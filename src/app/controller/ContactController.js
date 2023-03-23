@@ -3,7 +3,7 @@ const ContactsRepository = require('../repositories/ContactsRepository');
 
 class ContactController {
   async index(request, response) {
-    const { orderBy} = request.query;
+    const { orderBy } = request.query;
     const contacts = await ContactsRepository.findAll(orderBy);
 
     response.json(contacts);
@@ -30,13 +30,13 @@ class ContactController {
     } = request.body;
 
     if (!name) {
-      return response.status(400).json({ error: 'Name is required'})
+      return response.status(400).json({ error: 'Name is required' })
     }
 
     const contactExists = await ContactsRepository.findByEmail(email);
 
     if (contactExists) {
-      return response.status(400).json({ error: 'This e-mail is already in use'});
+      return response.status(400).json({ error: 'This e-mail is already in use' });
     }
 
     const contact = await ContactsRepository.create({
@@ -56,16 +56,16 @@ class ContactController {
     const contactExists = await ContactsRepository.findById(id);
 
     if (!contactExists) {
-      return response.status(404).json({ error: 'User not Found'})
+      return response.status(404).json({ error: 'User not Found' })
     }
 
     if (!name) {
-      return response.status(400).json({ error: 'Name is required'})
+      return response.status(400).json({ error: 'Name is required' })
     }
 
     const contactByEmail = await ContactsRepository.findByEmail(email);
     if (contactByEmail && contactByEmail.id != id) {
-      return response.status(400).json({ error: 'This e-mail is already in use'});
+      return response.status(400).json({ error: 'This e-mail is already in use' });
     }
 
     const contact = await ContactsRepository.update(id, {
@@ -77,12 +77,12 @@ class ContactController {
 
   async delete(request, response) {
     // Deletar um registro
-  const { id } = request.params;
+    const { id } = request.params;
 
-  await ContactsRepository.delete(id);
-  // 204: No Content
-  response.sendStatus(204);
-}
+    await ContactsRepository.delete(id);
+    // 204: No Content
+    response.sendStatus(204);
+  }
 }
 
 // Singleton
